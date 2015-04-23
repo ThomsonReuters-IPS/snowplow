@@ -26,6 +26,7 @@ import java.nio.ByteBuffer
 
 // Thrift
 import org.apache.thrift.TSerializer
+import org.apache.thrift.protocol.TSimpleJSONProtocol
 
 // Snowplow
 import CollectorPayload.thrift.model1.CollectorPayload
@@ -44,8 +45,13 @@ trait AbstractSink {
     serializer.serialize(event)
   }
 
+  // Serialize Thrift CollectorPayload objects to Json
+  private val thriftJsonSerializer = new ThreadLocal[TSerializer] {
+    override def initialValue = new TSerializer(new TSimpleJSONProtocol.Factory)
+  }
+
   def serializeEventToJson(event: CollectorPayload): String = {
-    val serializer = thriftSerializer.get()
+    val serializer = thriftJsonSerializer.get()
     serializer.toString(event)
   }
 }

@@ -71,8 +71,10 @@ class KafkaSink(config: CollectorConfig) extends AbstractSink with Logging {
       debug(s"Json payload: ${json}")
       kafka.send(new KeyedMessage(topic, json))
     } catch {
-      case e: Exception=>
+      case e: Exception=>{
         warn(s"unable to send event due to exception ${e}, see kafka log for more details")
+				e.printStackTrace
+      }
     }
     return se
   }
