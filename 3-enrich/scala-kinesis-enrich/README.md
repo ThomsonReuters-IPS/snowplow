@@ -3,8 +3,8 @@
 ## Introduction
 
 Scala Kinesis Enrich processes raw [Snowplow][snowplow] events from an input
-[Amazon Kinesis][kinesis] stream and stores enriched events
-into output Kinesis streams.
+[Amazon Kinesis][kinesis] or [Apache Kafka][kafka] stream and stores enriched events
+into output Kinesis or Kafka streams.
 Events are enriched using the [scala-common-enrich][common-enrich] library.
 
 ## Building
@@ -72,6 +72,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 [kinesis]: http://aws.amazon.com/kinesis/
+[kafka]: http://kafka.apache.org/
 [snowplow]: http://snowplowanalytics.com
 [common-enrich]: https://github.com/snowplow/snowplow/tree/master/3-enrich/scala-common-enrich
 [sbt]: http://typesafe.artifactoryonline.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.0/sbt-launch.jar

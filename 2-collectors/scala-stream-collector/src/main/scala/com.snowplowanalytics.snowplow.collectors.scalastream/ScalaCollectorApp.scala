@@ -69,6 +69,7 @@ object ScalaCollector extends App {
   val collectorConfig = new CollectorConfig(rawConf)
   val sink = collectorConfig.sinkEnabled match {
     case Sink.Kinesis => new KinesisSink(collectorConfig)
+    case Sink.Kafka => new KafkaSink(collectorConfig)
     case Sink.Stdout => new StdoutSink
   }
 
@@ -97,7 +98,7 @@ object Helper {
 // store this enumeration.
 object Sink extends Enumeration {
   type Sink = Value
-  val Kinesis, Stdout, Test = Value
+  val Kinesis, Kafka, Stdout, Test = Value
 }
 
 // Rigidly load the configuration file here to error when
@@ -122,6 +123,7 @@ class CollectorConfig(config: Config) {
   // TODO: either change this to ADTs or switch to withName generation
   val sinkEnabled = sink.getString("enabled") match {
     case "kinesis" => Sink.Kinesis
+    case "kafka" => Sink.Kafka
     case "stdout" => Sink.Stdout
     case "test" => Sink.Test
     case _ => throw new RuntimeException("collector.sink.enabled unknown.")
@@ -141,5 +143,11 @@ class CollectorConfig(config: Config) {
     case true => kinesis.getInt("thread-pool-size")
     case _ => 10
   }
+  
+  private val kafka = sink.getConfig("kafka")
+  val brokers = kafka.getString("brokers")
+  val kafkaTopic = kafka.getString("topic")
+  val kafkaAsync = kafka.getBoolean("async")
+  val kafkaBatchSize = kafka.getInt("batch-size")
 }
 

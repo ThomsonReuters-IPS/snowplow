@@ -46,6 +46,11 @@ object SnowplowKinesisEnrichBuild extends Build {
         Libraries.slf4j,
         Libraries.log4jOverSlf4j,
         Libraries.awsSdk,
+        Libraries.kafka,
+        Libraries.log4j,
+        Libraries.metrics,
+        Libraries.snappy,
+        Libraries.zkclient,
         Libraries.kinesisClient,
         Libraries.igluClient
         // Add your additional libraries here (comma-separated)...

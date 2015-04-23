@@ -247,6 +247,18 @@ enrich {
     initial-position = "TRIM_HORIZON"
     region: "us-east-1"
   }
+  kafka: {
+    in: {
+      zookeeper: "localhost:2181"
+      topic: "snowplow-events"
+	}
+    out: {
+      topic: "snowplow-enriched"
+      brokers: "localhost:9092"
+      async: true
+      batch-size: 1
+	}
+  }
   enrichments {
     geo_ip: {
       enabled: true # false not yet suported

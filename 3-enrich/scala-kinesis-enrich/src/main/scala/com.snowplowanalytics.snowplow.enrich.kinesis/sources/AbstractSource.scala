@@ -74,12 +74,14 @@ abstract class AbstractSource(config: KinesisEnrichConfig, igluResolver: Resolve
   // Initialize the sink to output enriched events to.
   protected val sink: Option[ISink] = config.sink match {
     case Sink.Kinesis => new KinesisSink(kinesisProvider, config, InputType.Good).some
+    case Sink.Kafka => new KafkaSink(config, InputType.Good).some
     case Sink.Stdouterr => new StdouterrSink(InputType.Good).some
     case Sink.Test => None
   }
 
   protected val badSink: Option[ISink] = config.sink match {
     case Sink.Kinesis => new KinesisSink(kinesisProvider, config, InputType.Bad).some
+    case Sink.Kafka => new KafkaSink(config, InputType.Bad).some
     case Sink.Stdouterr => new StdouterrSink(InputType.Bad).some
     case Sink.Test => None
   }
