@@ -53,6 +53,7 @@ class KafkaSink(config: CollectorConfig) extends AbstractSink with Logging {
     props.put("compression.codec", codec.toString)
     props.put("producer.type", if(config.kafkaAsync) "async" else "sync")
     props.put("metadata.broker.list", config.brokers)
+    props.put("serializer.class", "kafka.serializer.StringEncoder");
     props.put("batch.num.messages", config.kafkaBatchSize.toString)
     props.put("message.send.max.retries", messageSendMaxRetries.toString)
     props.put("request.required.acks",requestRequiredAcks.toString)
