@@ -66,6 +66,7 @@ class KafkaSink(config: CollectorConfig) extends AbstractSink with Logging {
     debug(s"Writing Thrift record to Kafka: ${event.toString}")
     val se = serializeEvent(event)
     try {
+    	debug("Serializing thrift record to json...")
       val json = serializeEventToJson(event)
       debug(s"Json payload: ${json}")
       kafka.send(new KeyedMessage(topic, json))
