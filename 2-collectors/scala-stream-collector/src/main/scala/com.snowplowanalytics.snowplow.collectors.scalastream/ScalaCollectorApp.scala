@@ -149,5 +149,6 @@ class CollectorConfig(config: Config) {
   val kafkaTopic = kafka.getString("topic")
   val kafkaAsync = kafka.getBoolean("async")
   val kafkaBatchSize = kafka.getInt("batch-size")
+  val storeAsJson = kafka.getBoolean("store-json")
 }
 

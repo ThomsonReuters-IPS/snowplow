@@ -86,6 +86,7 @@ collector {
       topic: "snowplow-events"
       async: false
       batch-size: 1
+      store-json: false
     }
   }
 }

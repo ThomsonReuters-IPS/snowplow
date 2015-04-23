@@ -53,7 +53,9 @@ class KafkaSink(config: CollectorConfig) extends AbstractSink with Logging {
     props.put("compression.codec", codec.toString)
     props.put("producer.type", if(config.kafkaAsync) "async" else "sync")
     props.put("metadata.broker.list", config.brokers)
-    props.put("serializer.class", "kafka.serializer.StringEncoder");
+    if(config.storeAsJson) {
+	    props.put("serializer.class", "kafka.serializer.StringEncoder");
+    }
     props.put("batch.num.messages", config.kafkaBatchSize.toString)
     props.put("message.send.max.retries", messageSendMaxRetries.toString)
     props.put("request.required.acks",requestRequiredAcks.toString)
@@ -67,10 +69,14 @@ class KafkaSink(config: CollectorConfig) extends AbstractSink with Logging {
     debug(s"Writing Thrift record to Kafka: ${event.toString}")
     val se = serializeEvent(event)
     try {
-    	debug("Serializing thrift record to json...")
-      val json = serializeEventToJson(event)
-      debug(s"Json payload: ${json}")
-      kafka.send(new KeyedMessage(topic, json))
+    	if (config.storeAsJson) {
+	    	debug("Serializing thrift record to json...")
+	      val json = serializeEventToJson(event)
+	      debug(s"Json payload: ${json}")
+	      kafka.send(new KeyedMessage(topic, json))
+    	} else {
+	      kafka.send(new KeyedMessage(topic, se))
+    	}
     } catch {
       case e: Exception=>{
         warn(s"unable to send event due to exception ${e}, see kafka log for more details")
