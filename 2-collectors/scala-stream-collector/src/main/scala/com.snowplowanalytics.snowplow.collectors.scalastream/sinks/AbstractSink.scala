@@ -43,4 +43,9 @@ trait AbstractSink {
     val serializer = thriftSerializer.get()
     serializer.serialize(event)
   }
+
+  def serializeEventToJson(event: CollectorPayload): String = {
+    val serializer = thriftSerializer.get()
+    serializer.toString(event)
+  }
 }
