@@ -15,13 +15,14 @@
  */
 import sbt._
 import Keys._
+import aether._
 
 object BuildSettings {
 
   // Basic settings for our app
-  lazy val basicSettings = Seq[Setting[_]](
+  lazy val basicSettings = Aether.aetherSettings ++ Aether.aetherPublishSettings ++ Seq[Setting[_]](
     organization          :=  "com.snowplowanalytics",
-    version               :=  "0.3.0",
+    version               :=  "0.3.0-SNAPSHOT",
     description           :=  "Scala Stream Collector for Snowplow raw events",
     scalaVersion          :=  "2.10.4",
     scalacOptions         :=  Seq("-deprecation", "-encoding", "utf8",
@@ -30,7 +31,17 @@ object BuildSettings {
     maxErrors             := 5,
     // http://www.scala-sbt.org/0.13.0/docs/Detailed-Topics/Forking.html
     fork in run           := true,
-    resolvers             ++= Dependencies.resolutionRepos
+    resolvers             ++= Dependencies.resolutionRepos,
+    
+    publishTo <<= (version) apply {
+      (v: String) => if (v.trim().endsWith("SNAPSHOT")) 
+      	Some("snapshots" at "http://repo.1p.thomsonreuters.com/nexus/content/repositories/snapshots") 
+    	else 
+    		Some("releases" at "http://repo.1p.thomsonreuters.com/nexus/content/repositories/releases")
+    },
+    credentials += Credentials("Nexus", "repo.1p.thomsonreuters.com", sys.env.getOrElse("nexusUsername",""), sys.env.getOrElse("nexusPassword","")),    
+    pomIncludeRepository := { x => false }
+    
   )
 
   // Makes our SBT app settings available from within the app
